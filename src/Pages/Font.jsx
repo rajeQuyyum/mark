@@ -42,13 +42,13 @@ export default function Font() {
       </div>
 
       {/* Investment & History */}
-      <div className="max-w-6xl mx-auto space-y-6">
+      <div className="max-w-6xl mx-auto space-y-6 mb-10">
         <InvestmentCard />
         <HistoryCard />
       </div>
 
       {/* Banking Services */}
-      <div className="w-full max-w-6xl mx-auto bg-[#252424bb] rounded-lg shadow-lg mb-10 py-6 px-4">
+      <div className="w-full max-w-6xl mx-auto bg-[#252424bb] rounded-lg shadow-lg mb-24 py-6 px-4">
         <h1 className="mb-6 text-lg md:text-xl font-semibold text-white">
           Banking Services
         </h1>

@@ -43,10 +43,8 @@ const UserChat = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
-      <main className="p-4 sm:p-6 md:p-10 w-full max-w-3xl mx-auto">
-        <h1 className="text-base sm:text-lg md:text-xl mb-6 text-justify">
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sit soluta est voluptas tempora ratione dicta nostrum similique...
-        </h1>
+      <main className="p-4 sm:p-6 md:p-10 w-full max-w-3xl mx-auto mt-28">
+       
 
         <div className="bg-white w-full max-w-full mx-auto p-4 rounded shadow">
           <div className="max-w-full mx-auto">
