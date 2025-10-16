@@ -86,9 +86,6 @@ const Login = () => {
           <NavLink to="/register">
             <h4>Register</h4>
           </NavLink>
-          <NavLink to="/reset">
-            <h1 className="list-item">goat</h1>
-          </NavLink>
         </div>
       </form>
     </div>

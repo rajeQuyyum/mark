@@ -65,7 +65,8 @@ export default function CardManager() {
   return (
     <div>
         <Navbar />
-        <div className="w-full flex flex-col items-center mt-20 text-gray-600 space-y-10 my-28">
+        <h1 className="lg:w-[1000px] w-full lg:ml-52">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aperiam, a blanditiis nihil dignissimos quia ut, soluta tenetur mollitia minus inventore natus esse? Aperiam odit ipsa laudantium sint consequuntur quae, dignissimos animi. Astatum quibusdam architecto officia aut necessitatibus maiores asperiores fuga odio distinctio error consequatur facilis itaque ad, illo sit magni nobis laborum nihil pariatur. Nesciunt possimus in provident ut quo dignissimos et impedit exercitationem. Quibusdam suscipit a possimus?</h1>
+        <div className="w-full flex flex-col items-center mt-10 space-y-10 my-28">
       {/* Form to create card */}
       <div className="bg-white shadow-lg rounded-xl p-6 w-[400px]">
         <h2 className="text-xl font-bold mb-4 text-gray-700">Create New Card</h2>

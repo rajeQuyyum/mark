@@ -80,7 +80,7 @@ export default function Trransfer() {
     <div className="flex flex-col min-h-screen">
       <Navbar />
 
-      <main className="flex-1 container mx-auto px-4 sm:px-6 lg:px-8 mt-20 mb-20">
+      <main className="flex-1 container mx-auto px-4 sm:px-6 lg:px-8 mt-28 mb-20">
         <h1 className="text-center text-lg sm:text-xl md:text-2xl font-bold text-gray-600 mb-6">
           Transfer Money
         </h1>
