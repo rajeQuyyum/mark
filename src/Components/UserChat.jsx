@@ -166,11 +166,11 @@ const UserChat = () => {
                     value={text}
                     onChange={(e) => setText(e.target.value)}
                     placeholder="Type message..."
-                    className="flex-1 p-2 rounded bg-amber-400"
+                    className="flex-1 rounded-3xl border border-gray-400 outline-none"
                   />
                   <button
                     onClick={sendMessage}
-                    className="text-green-600 text-3xl p-2 rounded hover:bg-green-100 transition"
+                    className="text-green-600 text-3xl p-2 rounded hover:bg-green-100 transition "
                   >
                     <FiSend />
                   </button>
