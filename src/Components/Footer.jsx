@@ -41,9 +41,9 @@ export default function Footer() {
 
         {/* Chat */}
         <li>
-          <NavLink to="/msg">
+          <DelayedLink  to="/msg">
             <FaRocketchat className="text-3xl md:text-4xl text-green-500" />
-          </NavLink>
+          </DelayedLink >
         </li>
       </ul>
     </footer>

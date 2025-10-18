@@ -32,7 +32,7 @@ body{
 form{
   
     width: 400px;
-    background-color: rgba(255,255,255,0.13);
+    background-color: rgba(168, 14, 76, 0.13);
     position: absolute;
     transform: translate(-50%,-50%);
     top: 50%;
@@ -149,6 +149,45 @@ input{
 .animate-fadeIn {
   animation: fadeIn 0.3s ease-out;
 }
+
+
+
+
+
+ @keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-message {
+  animation: slideUpFade 0.3s ease-in-out;
+}
+
+@keyframes highlightFade {
+  0% {
+    background-color: rgba(255, 255, 255, 0.4);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.highlight-message {
+  animation: highlightFade 1.2s ease-out;
+}
+
+
+
+
+
+
+
 
 
 
