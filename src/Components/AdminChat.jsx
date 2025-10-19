@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { io } from "socket.io-client";
 import axios from "axios";
 
@@ -9,10 +9,10 @@ const AdminChat = () => {
   const [selectedEmail, setSelectedEmail] = useState(null);
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
+  const messagesEndRef = useRef(null); // <- ref for scrolling
 
-  const API = import.meta.env.VITE_API || 'http://localhost:3001' || 'http://localhost:2000';
+  const API = import.meta.env.VITE_API || "http://localhost:3001" || "http://localhost:2000";
 
-  // Load user emails
   useEffect(() => {
     fetchEmails();
 
@@ -27,20 +27,22 @@ const AdminChat = () => {
     };
   }, [selectedEmail]);
 
-  // Load messages for selected email
   useEffect(() => {
     if (selectedEmail) {
       socket.emit("join", selectedEmail);
-      axios
-        .get(`${API}/admin/messages/${selectedEmail}`)
-        .then((res) => setMessages(res.data));
+      axios.get(`${API}/admin/messages/${selectedEmail}`).then((res) => setMessages(res.data));
     }
   }, [selectedEmail]);
 
+  // Auto-scroll effect
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
+
   const fetchEmails = () => {
-    axios
-      .get(`${API}/admin/messages/emails`)
-      .then((res) => setEmails(res.data));
+    axios.get(`${API}/admin/messages/emails`).then((res) => setEmails(res.data));
   };
 
   const sendReply = () => {
@@ -64,7 +66,6 @@ const AdminChat = () => {
       .catch((err) => console.error("Delete failed", err));
   };
 
-  // Helper function to format date/time
   const formatDateTime = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleString([], {
@@ -77,9 +78,9 @@ const AdminChat = () => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto p-4 flex flex-col sm:flex-row gap-4 bg-white rounded shadow">
+    <div className="max-w-5xl mx-auto p-4 flex flex-col sm:flex-row gap-4 bg-white rounded shadow h-[50vh] mb-24">
       {/* Sidebar */}
-      <div className="sm:w-1/3 w-full border sm:border-r border-gray-300 rounded p-3">
+      <div className="sm:w-1/3 w-full border sm:border-r border-gray-300 rounded p-3 overflow-y-auto h-28">
         <h3 className="font-bold mb-2">Users</h3>
         <div className="space-y-2">
           {emails.map((email, i) => (
@@ -89,10 +90,7 @@ const AdminChat = () => {
                 email === selectedEmail ? "bg-gray-200" : "hover:bg-gray-100"
               }`}
             >
-              <span
-                onClick={() => setSelectedEmail(email)}
-                className="truncate flex-1"
-              >
+              <span onClick={() => setSelectedEmail(email)} className="truncate flex-1">
                 {email}
               </span>
               <button
@@ -107,45 +105,57 @@ const AdminChat = () => {
       </div>
 
       {/* Chat Section */}
-      <div className="sm:w-2/3 w-full flex flex-col">
+      <div className="sm:w-2/3 w-full flex flex-col h-full border border-gray-300 rounded">
         {selectedEmail ? (
           <>
-            <h3 className="font-bold mb-2">Chat with {selectedEmail}</h3>
-            <div className="border border-gray-300 rounded p-3 flex-1 overflow-y-auto h-72 bg-gray-50">
-              {messages.map((msg, i) => (
-                <div
-                  key={i}
-                  className={`mb-2 ${
-                    msg.sender === "admin" ? "text-right" : "text-left"
-                  }`}
-                >
-                  <div className="inline-block bg-white px-3 py-1 rounded shadow text-sm break-words whitespace-pre-wrap max-w-full">
-                    <strong>{msg.sender}:</strong> {msg.text}
-                    <div className="text-xs text-gray-500 mt-1">
-                      {formatDateTime(msg.createdAt)}
+            <h3 className="font-bold p-3 border-b border-gray-300">Chat with {selectedEmail}</h3>
+
+            {/* Messages container + input wrapper */}
+            <div className="flex flex-col flex-1 p-3 gap-3 bg-gray-50 overflow-hidden">
+              {/* Messages */}
+              <div className="flex-1 overflow-y-auto flex flex-col gap-2">
+                {messages.map((msg, i) => (
+                  <div
+                    key={i}
+                    className={`flex ${msg.sender === "admin" ? "justify-end" : "justify-start"}`}
+                  >
+                    <div
+                      className="inline-block px-3 py-1 rounded shadow text-sm break-words whitespace-pre-wrap max-w-[80%] w-fit"
+                      style={{
+                        backgroundColor: msg.sender === "admin" ? "#d1e7dd" : "#f8d7da",
+                        wordBreak: "break-word",
+                      }}
+                    >
+                      <strong>{msg.sender}:</strong> {msg.text}
+                      <div className="text-xs text-gray-500 mt-1">
+                        {formatDateTime(msg.createdAt)}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
-            <div className="flex mt-3 gap-2">
-              <input
-                type="text"
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-                placeholder="Type reply..."
-                className="flex-1 border border-gray-300 rounded px-3 py-2"
-              />
-              <button
-                onClick={sendReply}
-                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-              >
-                Send
-              </button>
+                ))}
+                <div ref={messagesEndRef} /> {/* <- scroll target */}
+              </div>
+
+              {/* Input */}
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={text}
+                  onChange={(e) => setText(e.target.value)}
+                  placeholder="Type reply..."
+                  className="flex-1 border border-gray-300 rounded px-3 py-2"
+                />
+                <button
+                  onClick={sendReply}
+                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                >
+                  Send
+                </button>
+              </div>
             </div>
           </>
         ) : (
-          <p className="text-gray-500">Select a user to start chat</p>
+          <p className="text-gray-500 p-3">Select a user to start chat</p>
         )}
       </div>
     </div>
