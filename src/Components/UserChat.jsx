@@ -8,9 +8,8 @@ import { FiSend } from "react-icons/fi";
 const socket = io(import.meta.env.VITE_API);
 
 const UserChat = () => {
-  // ✅ Try to get user name and email from localStorage
   const storedEmail = localStorage.getItem("chatEmail");
-  const storedName = localStorage.getItem("userName"); // <-- store this when user logs in
+  const storedName = localStorage.getItem("userName");
 
   const [email, setEmail] = useState(storedEmail || "");
   const [userName, setUserName] = useState(storedName || "");
@@ -43,7 +42,6 @@ const UserChat = () => {
   }, [isEmailSet, email]);
 
   useEffect(() => {
-    // Auto scroll to bottom when new message comes in
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
@@ -54,21 +52,22 @@ const UserChat = () => {
       email,
       sender: "user",
       text,
-      time: new Date().toISOString(), // include timestamp
     };
 
     socket.emit("sendMessage", messageData);
     setText("");
   };
 
-  const formatTime = (timestamp) => {
-    if (!timestamp) return "";
-    const date = new Date(timestamp);
+  // ✅ Format date/time (same style as admin)
+  const formatDateTime = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
     return date.toLocaleString([], {
-      month: "short",
-      day: "numeric",
       hour: "2-digit",
       minute: "2-digit",
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
     });
   };
 
@@ -147,11 +146,11 @@ const UserChat = () => {
                         }}
                       >
                         <p className="text-sm">{msg.text}</p>
-                        {msg.time && (
-                          <p className="text-[10px] text-gray-500 mt-1">
-                            {formatTime(msg.time)}
-                          </p>
-                        )}
+
+                        {/* ✅ Show timestamp (createdAt) */}
+                        <p className="text-[10px] text-gray-500 mt-1">
+                          {formatDateTime(msg.createdAt)}
+                        </p>
                       </div>
                     </div>
                   ))}
