@@ -6,17 +6,6 @@ import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
 import Home from './Components/Home'
 import Hom2 from './Components/Hom2'
 import Transfer from './Pages/Trransfer'
-import Wallet from './Pages/Wallet'
-import Card from './Pages/Card'
-import Global from './Banks/Global'
-import Tech from './Banks/Tech'
-import Acb from './Banks/Acb'
-import Citi from './Banks/Citi'
-import Star from './Banks/Star'
-import Vin from './Banks/Vin'
-import Chase from './Banks/Chase'
-import Confirm from './Banks/Confirm'
-import Accounts from './Pages/Accounts'
 import Reset from './Components/Reset'
 import AdminLogin from "./Components/AdminLogin";
 import AdminDashboard from "./Components/AdminDashboard";
@@ -26,9 +15,6 @@ import Investment from './Pages/Investment'
 import CardManager from './Pages/CardManager'
 import StockDemo from './Pages/StockDemo'
 import UserChat from './Components/UserChat'
-// import AdminPage from './Components/AdminPage'
-// import AdminChatPage from './Components/AdminChatPage'
-// import UserChatPage from './Components/UserChatPage'
 
 
 
@@ -84,102 +70,9 @@ function App() {
            </ProtectedRoute>
          } 
        />
-       <Route 
-         path='/wallet' 
-         element={
-           <ProtectedRoute>
-             <Wallet />
-           </ProtectedRoute>
-         } 
-       />
-       <Route 
-         path='/card' 
-         element={
-           <ProtectedRoute>
-             <Card />
-           </ProtectedRoute>
-         } 
-       />
-       <Route 
-         path='/glo' 
-         element={
-           <ProtectedRoute>
-             <Global />
-           </ProtectedRoute>
-         } 
-       />
-       <Route 
-         path='/tech' 
-         element={
-           <ProtectedRoute>
-             <Tech />
-           </ProtectedRoute>
-         } 
-       />
-       <Route 
-         path='/acb' 
-         element={
-           <ProtectedRoute>
-             <Acb />
-           </ProtectedRoute>
-         } 
-       />
-       <Route 
-         path='/citi' 
-         element={
-           <ProtectedRoute>
-             <Citi />
-           </ProtectedRoute>
-         } 
-       />
-       <Route 
-         path='/star' 
-         element={
-           <ProtectedRoute>
-             <Star />
-           </ProtectedRoute>
-         } 
-       />
-       <Route 
-         path='/chhase' 
-         element={
-           <ProtectedRoute>
-             <Chase />
-           </ProtectedRoute>
-         } 
-       />
-       <Route 
-         path='/vin' 
-         element={
-           <ProtectedRoute>
-             <Vin />
-           </ProtectedRoute>
-         } 
-       />
-       <Route 
-         path='/con' 
-         element={
-           <ProtectedRoute>
-             <Confirm />
-           </ProtectedRoute>
-         } 
-       />
-       {/* <Route 
-         path='/noti' 
-         element={
-           <ProtectedRoute>
-             <Notification />
-           </ProtectedRoute>
-         } 
-       /> */}
-       <Route 
-         path='/accounts' 
-         element={
-           <ProtectedRoute>
-             <Accounts />
-           </ProtectedRoute>
-         } 
-       />
+     
+       
+       
 
        {/* Catch-all → redirect to login */}
        <Route path='*' element={<Navigate to="/login" replace />} />
@@ -206,11 +99,10 @@ function App() {
          />
          <Route path='crd' element={<ProtectedRoute><CardManager /></ProtectedRoute>} />
          <Route path='stock' element={<ProtectedRoute><StockDemo /></ProtectedRoute>} />
-         {/* <Route path='/admin' element={<AdminPage />} /> */}
+       
 
-          {/* <Route path="/chat/user/:id" element={<UserChatPage userId="USER_ID" adminId="ADMIN_ID" />} />
-        <Route path="/chat/admin/:id" element={<AdminChatPage adminId="ADMIN_ID" />} /> */}
-      <Route path='msg' element={<UserChat />} />
+         
+      <Route path='msg' element={<ProtectedRoute><UserChat /></ProtectedRoute>} />
 
 
      </Routes>
