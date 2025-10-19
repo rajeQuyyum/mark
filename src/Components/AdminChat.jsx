@@ -10,7 +10,7 @@ const AdminChat = () => {
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
 
-  const API = import.meta.env.VITE_API || 'http://localhost:3001' || 'http://localhost:4000';
+  const API = import.meta.env.VITE_API || 'http://localhost:3001' || 'http://localhost:2000';
 
   // Load user emails
   useEffect(() => {
