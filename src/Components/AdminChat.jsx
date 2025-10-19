@@ -78,9 +78,9 @@ const AdminChat = () => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto p-4 flex flex-col sm:flex-row gap-4 bg-white rounded shadow h-[50vh] mb-24">
+    <div className="max-w-5xl mx-auto p-4 flex flex-col sm:flex-row gap-4 bg-white rounded shadow h-[70vh] mb-24">
       {/* Sidebar */}
-      <div className="sm:w-1/3 w-full border sm:border-r border-gray-300 rounded p-3 overflow-y-auto h-28">
+      <div className="sm:w-1/3 w-full border sm:border-r border-gray-300 rounded p-2 overflow-y-auto h-28">
         <h3 className="font-bold mb-2">Users</h3>
         <div className="space-y-2">
           {emails.map((email, i) => (
