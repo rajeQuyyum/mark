@@ -30,7 +30,7 @@ export default function Trransfer() {
     const html = `
       <div style="padding:20px; font-family: Arial;">
         <h2>Transaction Receipt</h2>
-        <p><strong>User:</strong> ${user?.name}</p>
+        <p><strong>sender:</strong> ${user?.name}</p>
         <p><strong>Type:</strong> ${tx.type}</p>
         <p><strong>Amount:</strong> $${tx.amount}</p>
         <p><strong>Recipient Account:</strong> ${tx.counterpartyAccount}</p>

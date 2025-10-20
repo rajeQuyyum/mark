@@ -9,7 +9,9 @@ export default function Navbar() {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
   const [balance, setBalance] = useState(user ? user.balance : 0);
-  const [showBalance, setShowBalance] = useState(true);
+  const [showBalance, setShowBalance] = useState(
+    localStorage.getItem("showBalance") === "false" ? false : true
+  );
   const [showTranslate, setShowTranslate] = useState(false);
   const [selectedLang, setSelectedLang] = useState(localStorage.getItem("selectedLang") || "en");
   const [searchTerm, setSearchTerm] = useState("");
@@ -37,7 +39,12 @@ export default function Navbar() {
     navigate("/login");
   };
 
-  const toggleBalance = () => setShowBalance(!showBalance);
+  // ✅ Toggle + persist balance visibility
+  const toggleBalance = () => {
+    const newValue = !showBalance;
+    setShowBalance(newValue);
+    localStorage.setItem("showBalance", newValue);
+  };
 
   // ✅ Load Google Translate script once
   useEffect(() => {
