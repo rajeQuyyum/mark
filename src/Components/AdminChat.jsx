@@ -78,9 +78,9 @@ const AdminChat = () => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto p-4 flex flex-col sm:flex-row gap-4 bg-white rounded shadow h-[70vh] mb-24">
+    <div className="max-w-5xl mx-auto p-2 flex flex-col sm:flex-row gap-4 bg-white rounded shadow h-[70vh] mb-20">
       {/* Sidebar */}
-      <div className="sm:w-1/3 w-full border sm:border-r border-gray-300 rounded p-2 overflow-y-auto h-28">
+      <div className="sm:w-1/3 w-full border sm:border-r border-gray-300 rounded md:p-2 p-6     overflow-y-auto h-28 ">
         <h3 className="font-bold mb-2">Users</h3>
         <div className="space-y-2">
           {emails.map((email, i) => (
@@ -137,21 +137,27 @@ const AdminChat = () => {
               </div>
 
               {/* Input */}
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={text}
-                  onChange={(e) => setText(e.target.value)}
-                  placeholder="Type reply..."
-                  className="flex-1 border border-gray-300 rounded px-3 py-2"
-                />
-                <button
-                  onClick={sendReply}
-                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                >
-                  Send
-                </button>
-              </div>
+             <div className="flex gap-2">
+         <textarea
+         value={text}
+         onChange={(e) => setText(e.target.value)}
+         placeholder="Type reply..."
+        className="flex-1 border border-gray-400 rounded px-1 py-2 resize-none overflow-y-auto outline-none"
+       rows={2} // start small but allows scrolling
+       style={{
+         maxHeight: "50px", // limit height before scroll
+         whiteSpace: "pre-wrap", // wrap text properly
+      wordBreak: "break-word",
+       }}
+       />
+     <button
+    onClick={sendReply}
+    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+     >
+    Send
+       </button>
+       </div>
+
             </div>
           </>
         ) : (

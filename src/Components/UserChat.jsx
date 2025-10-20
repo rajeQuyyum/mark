@@ -159,21 +159,28 @@ const UserChat = () => {
                 </div>
 
                 {/* Input area */}
-                <div className="flex mt-2 gap-2">
-                  <input
-                    type="text"
-                    value={text}
-                    onChange={(e) => setText(e.target.value)}
-                    placeholder="Type message..."
-                    className="flex-1 rounded-3xl border border-gray-400 outline-none"
-                  />
-                  <button
-                    onClick={sendMessage}
-                    className="text-green-600 text-3xl p-2 rounded hover:bg-green-100 transition "
-                  >
-                    <FiSend />
-                  </button>
-                </div>
+                {/* Input area */}
+<div className="flex mt-2 gap-2">
+  <textarea
+    value={text}
+    onChange={(e) => setText(e.target.value)}
+    placeholder="Type message..."
+    className="flex-1 rounded-2xl border border-gray-400 outline-none resize-none overflow-y-auto px-3 py-2"
+    rows={2}
+    style={{
+      maxHeight: "50px",
+      whiteSpace: "pre-wrap",
+      wordBreak: "break-word",
+    }}
+  />
+  <button
+    onClick={sendMessage}
+    className="text-green-600 text-3xl p-2 rounded hover:bg-green-100 transition"
+  >
+    <FiSend />
+  </button>
+</div>
+
               </>
             )}
           </div>

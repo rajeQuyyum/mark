@@ -184,6 +184,34 @@ input{
 
 
 
+/* Hide Google banner */
+.goog-te-banner-frame.skiptranslate {
+  display: none !important;
+}
+body {
+  top: 0px !important;
+}
+
+/* Hide default text */
+.goog-te-gadget {
+  color: transparent !important;
+}
+.goog-te-gadget .goog-te-combo {
+  color: #000 !important;
+}
+
+/* Fix z-index */
+.goog-te-menu-frame.skiptranslate {
+  z-index: 999999 !important;
+  height: auto !important;
+  width: auto !important;
+  overflow: visible !important;
+  background: #fff !important;
+}
+
+
+
+
 
 
 
