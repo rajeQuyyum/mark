@@ -12,7 +12,8 @@ export default function AdminNotifications() {
   const [editingNotif, setEditingNotif] = useState(null);
 
   // ✅ FIXED: Use ?? to avoid truthy string bug
-  const API = "http://localhost:2000";
+  const API =
+    import.meta.env.VITE_API || "http://localhost:3001" || "http://localhost:2000";
 
 
   // --- Fetch notifications ---

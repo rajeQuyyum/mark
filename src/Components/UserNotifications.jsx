@@ -5,7 +5,8 @@ export default function UserNotifications() {
   const user = JSON.parse(localStorage.getItem("user"));
   const [notifications, setNotifications] = useState([]);
 
-  const API = "http://localhost:2000";
+   const API =
+    import.meta.env.VITE_API || "http://localhost:3001" || "http://localhost:2000";
 
   useEffect(() => {
     if (!user?.email) return;
