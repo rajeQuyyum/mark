@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import AdminCards from "./AdminCards";
 import AdminChat from "./AdminChat";
-import AdminNotifications from "../AdminNotifications";
+import AdminNotifications from "./AdminNotifications";
+
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -429,7 +430,7 @@ export default function AdminDashboard() {
         <div className="mt-8 flex flex-col md:flex-col gap-4">
           <AdminCards />
           <AdminChat />
-          <AdminNotifications />
+         <AdminNotifications />
         </div>
       </main>
     </div>

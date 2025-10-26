@@ -4,6 +4,9 @@ import { IoLanguage } from "react-icons/io5";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { NavLink, useNavigate } from "react-router-dom";
 import axios from "axios";
+import DelayedLink from "./DelayedLink";
+import { IoIosNotificationsOutline } from "react-icons/io";
+import { io } from "socket.io-client";
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -13,12 +16,21 @@ export default function Navbar() {
     localStorage.getItem("showBalance") === "false" ? false : true
   );
   const [showTranslate, setShowTranslate] = useState(false);
-  const [selectedLang, setSelectedLang] = useState(localStorage.getItem("selectedLang") || "en");
+  const [selectedLang, setSelectedLang] = useState(
+    localStorage.getItem("selectedLang") || "en"
+  );
   const [searchTerm, setSearchTerm] = useState("");
   const dropdownRef = useRef(null);
 
-  const API = import.meta.env.VITE_API || "http://localhost:3001";
+  // 🔗 API base
+  const API = import.meta.env.VITE_API || "http://localhost:2000";
 
+  // 🔔 Notification state
+  const [hasNewNotification, setHasNewNotification] = useState(
+    localStorage.getItem("hasNewNotification") === "true"
+  );
+
+  // 🪙 Fetch balance
   const fetchBalance = () => {
     if (user) {
       axios
@@ -39,19 +51,19 @@ export default function Navbar() {
     navigate("/login");
   };
 
-  // ✅ Toggle + persist balance visibility
   const toggleBalance = () => {
     const newValue = !showBalance;
     setShowBalance(newValue);
     localStorage.setItem("showBalance", newValue);
   };
 
-  // ✅ Load Google Translate script once
+  // 🌍 Google Translate setup
   useEffect(() => {
     if (!document.getElementById("google-translate-script")) {
       const script = document.createElement("script");
       script.id = "google-translate-script";
-      script.src = "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+      script.src =
+        "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
       document.body.appendChild(script);
 
       window.googleTranslateElementInit = () => {
@@ -59,7 +71,8 @@ export default function Navbar() {
           new window.google.translate.TranslateElement(
             {
               pageLanguage: "en",
-              layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
+              layout:
+                window.google.translate.TranslateElement.InlineLayout.SIMPLE,
             },
             "google_translate_element"
           );
@@ -76,7 +89,6 @@ export default function Navbar() {
     }
   }, []);
 
-  // ✅ Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -84,10 +96,10 @@ export default function Navbar() {
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    return () =>
+      document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // 🌍 Language list
   const languages = [
     { code: "en", label: "English (Original)" },
     { code: "es", label: "Español (Spanish)" },
@@ -117,12 +129,10 @@ export default function Navbar() {
     { code: "el", label: "Ελληνικά (Greek)" },
   ];
 
-  // ✅ Filtered languages based on search
   const filteredLanguages = languages.filter((l) =>
     l.label.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // ✅ Apply translation & remember language
   const applyLanguage = (langCode) => {
     if (!langCode || langCode === "en") {
       document.cookie = "googtrans=;path=/;max-age=0";
@@ -138,16 +148,40 @@ export default function Navbar() {
     window.location.reload();
   };
 
+  // 🔔 Socket.io: Listen for notifications (reactive)
+  useEffect(() => {
+    const socket = io(API);
+
+    if (user?.email) {
+      socket.emit("register", user.email);
+    }
+
+    const handleNotification = () => {
+      setHasNewNotification(true);
+      localStorage.setItem("hasNewNotification", "true");
+    };
+
+    socket.on("newNotification", handleNotification);
+    socket.on("notificationUpdated", handleNotification);
+    socket.on("notificationDeleted", handleNotification);
+    socket.on("redPopup", handleNotification);
+
+    return () => socket.disconnect();
+  }, [user]);
+
   return (
     <nav className="bg-[#252424bb] fixed top-0 left-0 w-full shadow-md z-[99999]">
       <div className="max-w-screen-xl mx-auto flex flex-row items-center justify-between px-4 py-3 gap-4">
-        {/* Left */}
         <div className="flex items-center gap-3 w-full md:w-auto">
           <div>
-            <h1 className="text-xs md:text-sm font-sans text-gray-400">Welcome back!</h1>
+            <h1 className="text-xs md:text-sm font-sans text-gray-400">
+              Welcome back!
+            </h1>
             {user && (
               <>
-                <h1 className="text-white font-bold text-sm md:text-base">{user.name}</h1>
+                <h1 className="text-white font-bold text-sm md:text-base">
+                  {user.name}
+                </h1>
                 <div className="flex items-center gap-2">
                   <h1 className="text-green-500 font-bold text-sm md:text-base">
                     Balance: {showBalance ? `$${balance}` : "****"}
@@ -165,11 +199,25 @@ export default function Navbar() {
           </div>
         </div>
 
-        <NavLink className="text-white" to="/noti">not</NavLink>
+        {/* 🔔 Notifications Icon */}
+        <div className="relative">
+          <DelayedLink
+            to="/noti"
+            onClick={() => {
+              setHasNewNotification(false);
+              localStorage.setItem("hasNewNotification", "false");
+            }}
+            className="text-white text-2xl hover:text-green-400 transition"
+          >
+            <IoIosNotificationsOutline />
+            {hasNewNotification && (
+              <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse"></span>
+            )}
+          </DelayedLink>
+        </div>
 
-        {/* Right */}
+        {/* 🌍 Language + Logout */}
         <div className="flex items-center gap-4">
-          {/* 🌍 Language Selector */}
           <div className="relative" ref={dropdownRef}>
             <button
               onClick={() => setShowTranslate((s) => !s)}
@@ -190,7 +238,6 @@ export default function Navbar() {
               }`}
               style={{ maxHeight: "60vh", overflowY: "auto", zIndex: 999999 }}
             >
-              {/* 🔍 Search input */}
               <input
                 type="text"
                 placeholder="Search language..."
@@ -198,8 +245,6 @@ export default function Navbar() {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
-
-              {/* Language list */}
               {filteredLanguages.length > 0 ? (
                 filteredLanguages.map((l) => (
                   <button
@@ -215,12 +260,14 @@ export default function Navbar() {
                   </button>
                 ))
               ) : (
-                <p className="text-gray-500 text-center text-sm py-2">No results found</p>
+                <p className="text-gray-500 text-center text-sm py-2">
+                  No results found
+                </p>
               )}
             </div>
           </div>
 
-          {/* Logout */}
+          {/* 🚪 Logout */}
           <div>
             {user ? (
               <button onClick={handleLogout}>
@@ -234,8 +281,6 @@ export default function Navbar() {
           </div>
         </div>
       </div>
-
-      {/* Hidden translate element */}
       <div id="google_translate_element" style={{ display: "none" }} />
     </nav>
   );
