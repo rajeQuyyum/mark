@@ -16,6 +16,7 @@ import CardManager from './Pages/CardManager'
 import StockDemo from './Pages/StockDemo'
 import UserChat from './Components/UserChat'
 import UserNotifications from './Components/UserNotifications'
+import AccountDetails from './Components/AccountDetails'
 
 
 
@@ -105,6 +106,7 @@ function App() {
 
          
       <Route path='msg' element={<ProtectedRoute><UserChat /></ProtectedRoute>} />
+      <Route path='act' element={<AccountDetails />} />
 
 
      </Routes>

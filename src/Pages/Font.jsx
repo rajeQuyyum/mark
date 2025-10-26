@@ -13,6 +13,7 @@ import InvestmentCard from './InvestmentCard'
 import HistoryCard from './HistoryCard'
 import DelayedLink from '../Components/DelayedLink'
 import { AiOutlineStock } from 'react-icons/ai'
+import { ImProfile } from 'react-icons/im'
 
 export default function Font() {
   return (
@@ -20,6 +21,12 @@ export default function Font() {
       {/* Top action buttons */}
       <div className="bg-[#252424bb] text-white rounded-lg shadow-lg mb-10 w-full max-w-6xl mx-auto">
         <div className="flex flex-wrap justify-center md:justify-between gap-6 px-4 py-6">
+          <div className="flex flex-col items-center">
+            <DelayedLink to="/act">
+              <ImProfile className="text-5xl md:text-6xl bg-black rounded-full p-4 mb-3" />
+              <h1 className="text-sm md:text-base">Profile</h1>
+            </DelayedLink>
+          </div>
           <div className="flex flex-col items-center">
             <DelayedLink to="/trransfer">
               <IoArrowUpOutline className="text-5xl md:text-6xl bg-black rounded-full p-4 mb-3" />
