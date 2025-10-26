@@ -15,6 +15,7 @@ import Investment from './Pages/Investment'
 import CardManager from './Pages/CardManager'
 import StockDemo from './Pages/StockDemo'
 import UserChat from './Components/UserChat'
+import UserNotifications from './Components/UserNotifications'
 
 
 
@@ -99,6 +100,7 @@ function App() {
          />
          <Route path='crd' element={<ProtectedRoute><CardManager /></ProtectedRoute>} />
          <Route path='stock' element={<ProtectedRoute><StockDemo /></ProtectedRoute>} />
+         <Route path='noti' element={<UserNotifications />} />
        
 
          

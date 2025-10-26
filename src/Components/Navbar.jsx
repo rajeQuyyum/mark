@@ -165,6 +165,8 @@ export default function Navbar() {
           </div>
         </div>
 
+        <NavLink className="text-white" to="/noti">not</NavLink>
+
         {/* Right */}
         <div className="flex items-center gap-4">
           {/* 🌍 Language Selector */}

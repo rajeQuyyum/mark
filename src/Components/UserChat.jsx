@@ -165,7 +165,7 @@ const UserChat = () => {
     value={text}
     onChange={(e) => setText(e.target.value)}
     placeholder="Type message..."
-    className="flex-1 rounded-2xl border border-gray-400 outline-none resize-none overflow-y-auto px-3 py-2"
+    className="flex-1 rounded-2 border border-gray-400 outline-none resize-none overflow-y-auto px-3 py-2"
     rows={2}
     style={{
       maxHeight: "50px",
