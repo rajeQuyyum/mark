@@ -1,21 +1,58 @@
-import React from 'react'
-import { BsCoin } from 'react-icons/bs'
-import { FaCaretUp } from 'react-icons/fa'
-import { FaMoneyCheckDollar } from 'react-icons/fa6'
-import { IoArrowUpOutline } from 'react-icons/io5'
-import { LiaFunnelDollarSolid } from 'react-icons/lia'
-import { MdOutlinePayment } from 'react-icons/md'
-import { PiChartLineThin, PiHandDepositLight } from 'react-icons/pi'
-import { RiMoneyDollarCircleFill } from 'react-icons/ri'
-import { NavLink } from 'react-router-dom'
-import Footer from '../Components/Footer'
-import InvestmentCard from './InvestmentCard'
-import HistoryCard from './HistoryCard'
-import DelayedLink from '../Components/DelayedLink'
-import { AiOutlineStock } from 'react-icons/ai'
-import { ImProfile } from 'react-icons/im'
+import React, { useEffect, useState } from "react";
+import { BsCoin } from "react-icons/bs";
+import { FaCaretUp } from "react-icons/fa";
+import { FaMoneyCheckDollar } from "react-icons/fa6";
+import { IoArrowUpOutline } from "react-icons/io5";
+import { LiaFunnelDollarSolid } from "react-icons/lia";
+import { MdOutlinePayment } from "react-icons/md";
+import { PiChartLineThin, PiHandDepositLight } from "react-icons/pi";
+import { RiMoneyDollarCircleFill } from "react-icons/ri";
+import { AiOutlineStock } from "react-icons/ai";
+import { ImProfile } from "react-icons/im";
+import Footer from "../Components/Footer";
+import InvestmentCard from "./InvestmentCard";
+import HistoryCard from "./HistoryCard";
+import DelayedLink from "../Components/DelayedLink";
+import axios from "axios";
+import NotificationPopup from "../Components/NotificationPopup"; // ✅ import popup
 
 export default function Font() {
+  const [latestNotification, setLatestNotification] = useState(null);
+  const [dismissedId, setDismissedId] = useState(null);
+  const user = JSON.parse(localStorage.getItem("user"));
+  const API =
+    import.meta.env.VITE_API ||
+    "http://localhost:3001" ||
+    "http://localhost:2000";
+
+  // ✅ Fetch latest notification
+  useEffect(() => {
+    if (!user?.email) return;
+
+    const fetchLatest = async () => {
+      try {
+        const res = await axios.get(`${API}/user/${user.email}/notifications?limit=1`);
+        const newest = res.data[0];
+        if (newest && newest._id !== dismissedId) {
+          setLatestNotification(newest);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    fetchLatest();
+    const interval = setInterval(fetchLatest, 10000);
+    return () => clearInterval(interval);
+  }, [user, dismissedId]);
+
+  // ✅ Close handler
+  const handleClose = (id) => {
+    setLatestNotification(null);
+    setDismissedId(id);
+    localStorage.setItem("dismissedNotificationId", id);
+  };
+
   return (
     <section className="lg:mt-28 mt-24 px-4">
       {/* Top action buttons */}
@@ -126,7 +163,10 @@ export default function Font() {
         </div>
       </div>
 
+      {/* ✅ Notification popup */}
+      <NotificationPopup notification={latestNotification} onClose={handleClose} />
+
       <Footer />
     </section>
-  )
+  );
 }

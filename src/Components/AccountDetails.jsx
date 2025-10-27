@@ -3,8 +3,11 @@ import axios from "axios";
 import { section } from "framer-motion/client";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import NotificationPopup from "./NotificationPopup";
 
 export default function AccountDetails() {
+  const [latestNotification, setLatestNotification] = useState(null);
+    const [dismissedId, setDismissedId] = useState(null);
   const [user, setUser] = useState(null); // read-only info
   const [info, setInfo] = useState({ phone: "", address: "", gender: "" }); // saved info
   const [editField, setEditField] = useState(null); // which field is being edited
@@ -12,6 +15,36 @@ export default function AccountDetails() {
   const [message, setMessage] = useState("");
 
   const API = import.meta.env.VITE_API || "http://localhost:2000";
+
+      // ✅ Fetch latest notification
+  useEffect(() => {
+    if (!user?.email) return;
+
+    const fetchLatest = async () => {
+      try {
+        const res = await axios.get(`${API}/user/${user.email}/notifications?limit=1`);
+        const newest = res.data[0];
+        if (newest && newest._id !== dismissedId) {
+          setLatestNotification(newest);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    fetchLatest();
+    const interval = setInterval(fetchLatest, 10000);
+    return () => clearInterval(interval);
+  }, [user, dismissedId]);
+
+  // ✅ Close handler
+  const handleClose = (id) => {
+    setLatestNotification(null);
+    setDismissedId(id);
+    localStorage.setItem("dismissedNotificationId", id);
+  };
+
+  
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -169,7 +202,8 @@ export default function AccountDetails() {
   </div>
 </div>
 
-
+  {/* ✅ Notification popup */}
+        <NotificationPopup notification={latestNotification} onClose={handleClose} />
     <Footer />
     </section>
   );

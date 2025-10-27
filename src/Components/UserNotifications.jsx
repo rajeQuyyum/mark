@@ -2,29 +2,47 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import NotificationPopup from "./NotificationPopup";
 
 export default function UserNotifications() {
   const user = JSON.parse(localStorage.getItem("user"));
   const [notifications, setNotifications] = useState([]);
+  const [latestNotification, setLatestNotification] = useState(null);
 
-  // ✅ API base URL
   const API = import.meta.env.VITE_API || "http://localhost:2000";
 
-  // ✅ Fetch all notifications for this user
+  // Fetch notifications
   useEffect(() => {
     if (!user?.email) return;
+
     axios
       .get(`${API}/user/${user.email}/notifications`)
-      .then((res) => setNotifications(res.data))
+      .then((res) => {
+        setNotifications(res.data);
+        if (res.data.length > 0) setLatestNotification(res.data[0]); // latest first
+      })
       .catch(console.log);
 
-    // ✅ Mark notifications as read (remove red dot)
     localStorage.setItem("hasNewNotification", "false");
   }, [user]);
+
+  const handleClosePopup = (id) => {
+    // Optionally remove it from state if you want permanent dismiss
+    setLatestNotification(null);
+    setNotifications((prev) => prev.filter((n) => n._id !== id));
+  };
 
   return (
     <section>
       <Navbar />
+      {/* Popup in center */}
+      {latestNotification && (
+        <NotificationPopup
+          notification={latestNotification}
+          onClose={handleClosePopup}
+        />
+      )}
+
       <div className="max-w-2xl mx-auto mt-28 px-4 pb-10 bg-amber-100">
         <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
           🔔 Notifications

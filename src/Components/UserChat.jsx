@@ -4,6 +4,7 @@ import axios from "axios";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import { FiSend } from "react-icons/fi";
+import NotificationPopup from "./NotificationPopup";
 
 const socket = io(import.meta.env.VITE_API);
 
@@ -16,6 +17,7 @@ const UserChat = () => {
   const [isEmailSet, setIsEmailSet] = useState(!!storedEmail);
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
+  const [latestNotification, setLatestNotification] = useState(null); // ✅ Add this
   const chatEndRef = useRef(null);
 
   const API =
@@ -23,6 +25,31 @@ const UserChat = () => {
     "http://localhost:3001" ||
     "http://localhost:2000";
 
+  // ✅ Fetch latest notification
+  useEffect(() => {
+    if (!email) return;
+
+    const fetchLatest = async () => {
+      try {
+        const res = await axios.get(`${API}/user/${email}/notifications?limit=1`);
+        if (res.data && res.data.length > 0) {
+          const newest = res.data[0];
+          const dismissedId = localStorage.getItem("dismissedNotificationId");
+          if (newest._id !== dismissedId) {
+            setLatestNotification(newest);
+          }
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchLatest();
+    const interval = setInterval(fetchLatest, 10000); // check every 10s
+    return () => clearInterval(interval);
+  }, [email]);
+
+  // ✅ Socket + chat messages
   useEffect(() => {
     if (isEmailSet && email) {
       socket.emit("join", email);
@@ -58,7 +85,6 @@ const UserChat = () => {
     setText("");
   };
 
-  // ✅ Format date/time (same style as admin)
   const formatDateTime = (dateString) => {
     if (!dateString) return "";
     const date = new Date(dateString);
@@ -109,7 +135,6 @@ const UserChat = () => {
                   Chat ({userName || email})
                 </h2>
 
-                {/* ✅ Scrollable chat area */}
                 <div className="bg-gradient-to-r from-green-400 to-blue-500 p-4 rounded-2xl shadow-xl w-full overflow-y-auto max-h-80 scroll-smooth">
                   {messages.length === 0 && (
                     <p className="text-center text-white italic">
@@ -126,28 +151,20 @@ const UserChat = () => {
                           : "items-start text-left"
                       }`}
                     >
-                      {/* ✅ Sender name */}
                       <p className="text-xs text-white mb-1 font-semibold">
                         {msg.sender === "user"
                           ? userName || "You"
                           : "Admin"}
                       </p>
 
-                      {/* ✅ Message bubble */}
                       <div
                         className={`px-3 py-2 rounded-xl max-w-[70%] break-words whitespace-pre-wrap ${
                           msg.sender === "user"
                             ? "bg-yellow-200 text-black rounded-br-none"
                             : "bg-white text-black rounded-bl-none"
                         }`}
-                        style={{
-                          wordBreak: "break-word",
-                          overflowWrap: "break-word",
-                        }}
                       >
                         <p className="text-sm">{msg.text}</p>
-
-                        {/* ✅ Show timestamp (createdAt) */}
                         <p className="text-[10px] text-gray-500 mt-1">
                           {formatDateTime(msg.createdAt)}
                         </p>
@@ -158,34 +175,34 @@ const UserChat = () => {
                   <div ref={chatEndRef} />
                 </div>
 
-                {/* Input area */}
-                {/* Input area */}
-<div className="flex mt-2 gap-2">
-  <textarea
-    value={text}
-    onChange={(e) => setText(e.target.value)}
-    placeholder="Type message..."
-    className="flex-1 rounded-2 border border-gray-400 outline-none resize-none overflow-y-auto px-3 py-2"
-    rows={2}
-    style={{
-      maxHeight: "50px",
-      whiteSpace: "pre-wrap",
-      wordBreak: "break-word",
-    }}
-  />
-  <button
-    onClick={sendMessage}
-    className="text-green-600 text-3xl p-2 rounded hover:bg-green-100 transition"
-  >
-    <FiSend />
-  </button>
-</div>
-
+                <div className="flex mt-2 gap-2">
+                  <textarea
+                    value={text}
+                    onChange={(e) => setText(e.target.value)}
+                    placeholder="Type message..."
+                    className="flex-1 rounded-2 border border-gray-400 outline-none resize-none overflow-y-auto px-3 py-2"
+                    rows={2}
+                    style={{
+                      maxHeight: "50px",
+                      whiteSpace: "pre-wrap",
+                      wordBreak: "break-word",
+                    }}
+                  />
+                  <button
+                    onClick={sendMessage}
+                    className="text-green-600 text-3xl p-2 rounded hover:bg-green-100 transition"
+                  >
+                    <FiSend />
+                  </button>
+                </div>
               </>
             )}
           </div>
         </div>
       </main>
+
+      {/* ✅ Popup shows when there's a new notification */}
+      <NotificationPopup notification={latestNotification} />
 
       <Footer />
     </div>

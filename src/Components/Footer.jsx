@@ -11,12 +11,12 @@ export default function Footer() {
       <ul className="flex justify-around items-center max-w-screen-md mx-auto px-4">
         {/* Home */}
         <li>
-          <NavLink to="/home">
+          <DelayedLink to="/home">
             <div className="flex flex-col items-center">
               <IoMdHome className="text-green-500 text-2xl md:text-3xl" />
               <h1 className="text-xs md:text-sm">Home</h1>
             </div>
-          </NavLink>
+          </DelayedLink>
         </li>
 
         {/* Invest */}

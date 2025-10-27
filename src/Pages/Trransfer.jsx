@@ -2,8 +2,11 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Footer from "../Components/Footer";
 import Navbar from "../Components/Navbar";
+import NotificationPopup from "../Components/NotificationPopup";
 
 export default function Trransfer() {
+  const [latestNotification, setLatestNotification] = useState(null);
+    const [dismissedId, setDismissedId] = useState(null);
   const user = JSON.parse(localStorage.getItem("user"));
   const [recipientAccount, setRecipientAccount] = useState("");
   const [recipientName, setRecipientName] = useState("");
@@ -11,6 +14,36 @@ export default function Trransfer() {
   const [description, setDescription] = useState("");
   const [transactions, setTransactions] = useState([]);
    const API = import.meta.env.VITE_API || 'http://localhost:3001' || 'http://localhost:2000'
+
+
+   // ✅ Fetch latest notification
+  useEffect(() => {
+    if (!user?.email) return;
+
+    const fetchLatest = async () => {
+      try {
+        const res = await axios.get(`${API}/user/${user.email}/notifications?limit=1`);
+        const newest = res.data[0];
+        if (newest && newest._id !== dismissedId) {
+          setLatestNotification(newest);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    fetchLatest();
+    const interval = setInterval(fetchLatest, 10000);
+    return () => clearInterval(interval);
+  }, [user, dismissedId]);
+
+  // ✅ Close handler
+  const handleClose = (id) => {
+    setLatestNotification(null);
+    setDismissedId(id);
+    localStorage.setItem("dismissedNotificationId", id);
+  };
+
 
   // Fetch transactions for the logged-in user
   const fetchTransactions = () => {
@@ -160,7 +193,8 @@ export default function Trransfer() {
           </div>
         </div>
       </main>
-
+          {/* ✅ Notification popup */}
+                <NotificationPopup notification={latestNotification} onClose={handleClose} />
       <Footer />
     </div>
   );
